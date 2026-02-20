@@ -77,8 +77,8 @@ export default function AddRecord() {
                 <button
                     onClick={() => setType('blood_pressure')}
                     className={`flex-1 py-4 px-2 rounded-xl text-lg font-bold flex flex-col items-center gap-2 border-2 transition-all ${type === 'blood_pressure'
-                            ? 'bg-red-50 border-red-500 text-red-700 shadow-md'
-                            : 'bg-white border-gray-200 text-gray-500'
+                        ? 'bg-red-50 border-red-500 text-red-700 shadow-md'
+                        : 'bg-white border-gray-200 text-gray-500'
                         }`}
                 >
                     <Activity size={32} />
@@ -87,8 +87,8 @@ export default function AddRecord() {
                 <button
                     onClick={() => setType('blood_sugar')}
                     className={`flex-1 py-4 px-2 rounded-xl text-lg font-bold flex flex-col items-center gap-2 border-2 transition-all ${type === 'blood_sugar'
-                            ? 'bg-blue-50 border-blue-500 text-blue-700 shadow-md'
-                            : 'bg-white border-gray-200 text-gray-500'
+                        ? 'bg-blue-50 border-blue-500 text-blue-700 shadow-md'
+                        : 'bg-white border-gray-200 text-gray-500'
                         }`}
                 >
                     <Droplet size={32} />
@@ -106,7 +106,7 @@ export default function AddRecord() {
                                     type="number"
                                     value={sys}
                                     onChange={(e) => setSys(e.target.value)}
-                                    className="w-full px-6 py-5 bg-white border-2 border-gray-200 rounded-2xl text-4xl font-bold focus:outline-none focus:border-red-500"
+                                    className="w-full px-6 py-5 bg-white border-2 border-gray-200 rounded-2xl text-4xl text-gray-900 font-bold focus:outline-none focus:border-red-500"
                                     pattern="\d*"
                                     required
                                 />
@@ -120,7 +120,7 @@ export default function AddRecord() {
                                     type="number"
                                     value={dia}
                                     onChange={(e) => setDia(e.target.value)}
-                                    className="w-full px-6 py-5 bg-white border-2 border-gray-200 rounded-2xl text-4xl font-bold focus:outline-none focus:border-blue-500"
+                                    className="w-full px-6 py-5 bg-white border-2 border-gray-200 rounded-2xl text-4xl text-gray-900 font-bold focus:outline-none focus:border-blue-500"
                                     pattern="\d*"
                                     required
                                 />
@@ -134,7 +134,7 @@ export default function AddRecord() {
                                     type="number"
                                     value={pulse}
                                     onChange={(e) => setPulse(e.target.value)}
-                                    className="w-full px-6 py-4 bg-white border-2 border-gray-200 rounded-2xl text-2xl font-bold focus:outline-none focus:border-gray-500"
+                                    className="w-full px-6 py-4 bg-white border-2 border-gray-200 rounded-2xl text-2xl text-gray-900 font-bold focus:outline-none focus:border-gray-500"
                                     pattern="\d*"
                                 />
                                 <span className="absolute right-6 top-1/2 -translate-y-1/2 text-gray-400 font-bold">下/分</span>
@@ -149,7 +149,7 @@ export default function AddRecord() {
                                 type="number"
                                 value={sugar}
                                 onChange={(e) => setSugar(e.target.value)}
-                                className="w-full px-6 py-5 bg-white border-2 border-gray-200 rounded-2xl text-4xl font-bold focus:outline-none focus:border-blue-500"
+                                className="w-full px-6 py-5 bg-white border-2 border-gray-200 rounded-2xl text-4xl text-gray-900 font-bold focus:outline-none focus:border-blue-500"
                                 pattern="\d*"
                                 required
                             />

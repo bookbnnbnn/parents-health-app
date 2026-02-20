@@ -68,7 +68,7 @@ export default function Login() {
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-xl text-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:bg-white transition-colors"
+                            className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-xl text-lg text-gray-900 font-medium focus:outline-none focus:ring-2 focus:ring-red-500 focus:bg-white transition-colors"
                             placeholder="name@example.com"
                             required
                         />
@@ -79,7 +79,7 @@ export default function Login() {
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-xl text-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:bg-white transition-colors"
+                            className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-xl text-lg text-gray-900 font-medium focus:outline-none focus:ring-2 focus:ring-red-500 focus:bg-white transition-colors"
                             placeholder="輸入密碼 (至少 6 字元)"
                             required
                             minLength={6}
