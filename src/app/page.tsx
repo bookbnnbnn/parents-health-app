@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts'
 import { HealthRecord } from '@/types'
 import { LogOut } from 'lucide-react'
@@ -136,6 +137,10 @@ export default function Home() {
                 <Tooltip
                   contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                   labelStyle={{ fontWeight: 'bold', color: '#374151', marginBottom: '4px' }}
+                  labelFormatter={(label, payload) => {
+                    if (payload && payload.length > 0) return payload[0].payload.完整時間;
+                    return label;
+                  }}
                 />
                 <ReferenceLine y={140} stroke="#EF4444" strokeDasharray="3 3" label={{ position: 'insideTopLeft', value: '標準最高', fill: '#EF4444', fontSize: 12 }} />
                 <ReferenceLine y={90} stroke="#F59E0B" strokeDasharray="3 3" />
@@ -157,6 +162,11 @@ export default function Home() {
               </LineChart>
             </ResponsiveContainer>
           </div>
+          <div className="mt-3 text-right">
+            <Link href="/trends" className="text-blue-600 font-bold hover:underline">
+              查看全部血壓趨勢 &rarr;
+            </Link>
+          </div>
         </div>
       )}
 
@@ -172,6 +182,10 @@ export default function Home() {
                 <Tooltip
                   contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                   labelStyle={{ fontWeight: 'bold', color: '#374151', marginBottom: '4px' }}
+                  labelFormatter={(label, payload) => {
+                    if (payload && payload.length > 0) return payload[0].payload.完整時間;
+                    return label;
+                  }}
                 />
                 <Line
                   type="monotone"
@@ -183,6 +197,11 @@ export default function Home() {
                 />
               </LineChart>
             </ResponsiveContainer>
+          </div>
+          <div className="mt-3 text-right">
+            <Link href="/trends" className="text-blue-600 font-bold hover:underline">
+              查看全部血糖趨勢 &rarr;
+            </Link>
           </div>
         </div>
       )}
