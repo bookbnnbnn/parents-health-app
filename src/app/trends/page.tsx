@@ -80,8 +80,8 @@ export default function Trends() {
                                         return label;
                                     }}
                                 />
-                                <ReferenceLine y={140} stroke="#EF4444" strokeDasharray="3 3" label={{ position: 'insideTopLeft', value: '標準最高', fill: '#EF4444', fontSize: 12 }} />
-                                <ReferenceLine y={90} stroke="#F59E0B" strokeDasharray="3 3" />
+                                <ReferenceLine y={120} stroke="#EF4444" strokeDasharray="3 3" label={{ position: 'insideTopLeft', value: '收縮壓標準 (120)', fill: '#EF4444', fontSize: 12 }} />
+                                <ReferenceLine y={80} stroke="#3B82F6" strokeDasharray="3 3" label={{ position: 'insideBottomLeft', value: '舒張壓標準 (80)', fill: '#3B82F6', fontSize: 12 }} />
                                 <Line type="monotone" dataKey="收縮壓" stroke="#DC2626" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 8 }} />
                                 <Line type="monotone" dataKey="舒張壓" stroke="#3B82F6" strokeWidth={3} dot={{ r: 4 }} />
                                 <Brush dataKey="id" height={40} stroke="#9CA3AF" fill="#F3F4F6" tickFormatter={() => ''} />

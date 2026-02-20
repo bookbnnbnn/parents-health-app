@@ -91,21 +91,16 @@ export default function Home() {
   const getStatusColor = (sys?: number, dia?: number) => {
     if (!sys || !dia) return 'bg-gray-100 text-gray-800'
     if (sys >= 140 || dia >= 90) return 'bg-red-100 text-red-800 border-red-200' // 高血壓
-    if (sys >= 130 || dia >= 80) return 'bg-yellow-100 text-yellow-800 border-yellow-200' // 偏高
-    return 'bg-green-100 text-green-800 border-green-200' // 正常
+    if (sys >= 120 || dia >= 80) return 'bg-yellow-100 text-yellow-800 border-yellow-200' // 偏高 (大於 120/80)
+    return 'bg-green-100 text-green-800 border-green-200' // 理想
   }
   const getStatusText = (sys?: number, dia?: number) => {
     if (!sys || !dia) return '無資料';
 
-    if (sys >= 140 && dia >= 90) return '收縮壓與舒張壓皆過高！';
-    if (sys >= 140) return '單純收縮壓過高！';
-    if (dia >= 90) return '單純舒張壓過高！';
+    if (sys >= 140 || dia >= 90) return '血壓過高，請注意！';
+    if (sys >= 120 || dia >= 80) return '血壓偏高 (超過 120/80)';
 
-    if (sys >= 130 && dia >= 80) return '收縮壓與舒張壓皆偏高';
-    if (sys >= 130) return '單純收縮壓偏高';
-    if (dia >= 80) return '單純舒張壓偏高';
-
-    return '血壓正常，繼續保持！';
+    return '血壓理想，繼續保持！';
   }
 
   if (loading) return <div className="p-8 text-center text-xl">載入中...</div>
@@ -203,8 +198,8 @@ export default function Home() {
                     return label;
                   }}
                 />
-                <ReferenceLine y={140} stroke="#EF4444" strokeDasharray="3 3" label={{ position: 'insideTopLeft', value: '標準最高', fill: '#EF4444', fontSize: 12 }} />
-                <ReferenceLine y={90} stroke="#F59E0B" strokeDasharray="3 3" />
+                <ReferenceLine y={120} stroke="#EF4444" strokeDasharray="3 3" label={{ position: 'insideTopLeft', value: '收縮壓標準 (120)', fill: '#EF4444', fontSize: 12 }} />
+                <ReferenceLine y={80} stroke="#3B82F6" strokeDasharray="3 3" label={{ position: 'insideBottomLeft', value: '舒張壓標準 (80)', fill: '#3B82F6', fontSize: 12 }} />
                 <Line
                   type="monotone"
                   dataKey="收縮壓"
