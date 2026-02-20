@@ -95,10 +95,17 @@ export default function Home() {
     return 'bg-green-100 text-green-800 border-green-200' // 正常
   }
   const getStatusText = (sys?: number, dia?: number) => {
-    if (!sys || !dia) return '無資料'
-    if (sys >= 140 || dia >= 90) return '偏高要注意！'
-    if (sys >= 130 || dia >= 80) return '稍微偏高'
-    return '血壓正常，繼續保持！'
+    if (!sys || !dia) return '無資料';
+
+    if (sys >= 140 && dia >= 90) return '收縮壓與舒張壓皆過高！';
+    if (sys >= 140) return '單純收縮壓過高！';
+    if (dia >= 90) return '單純舒張壓過高！';
+
+    if (sys >= 130 && dia >= 80) return '收縮壓與舒張壓皆偏高';
+    if (sys >= 130) return '單純收縮壓偏高';
+    if (dia >= 80) return '單純舒張壓偏高';
+
+    return '血壓正常，繼續保持！';
   }
 
   if (loading) return <div className="p-8 text-center text-xl">載入中...</div>

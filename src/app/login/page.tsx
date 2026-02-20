@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 import { Activity } from 'lucide-react'
@@ -12,7 +12,15 @@ export default function Login() {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const [isSignUp, setIsSignUp] = useState(false)
+    const [rememberMe, setRememberMe] = useState(true)
     const router = useRouter()
+
+    useEffect(() => {
+        const savedEmail = localStorage.getItem('remember_email')
+        const savedPassword = localStorage.getItem('remember_password')
+        if (savedEmail) setEmail(savedEmail)
+        if (savedPassword) setPassword(savedPassword)
+    }, [])
 
     const handleAuth = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -37,6 +45,15 @@ export default function Login() {
                     password,
                 })
                 if (error) throw error
+
+                if (rememberMe) {
+                    localStorage.setItem('remember_email', email)
+                    localStorage.setItem('remember_password', password)
+                } else {
+                    localStorage.removeItem('remember_email')
+                    localStorage.removeItem('remember_password')
+                }
+
                 router.push('/')
                 router.refresh()
             }
@@ -102,6 +119,22 @@ export default function Login() {
                             minLength={6}
                         />
                     </div>
+
+                    {!isSignUp && (
+                        <div className="flex items-center gap-2">
+                            <input
+                                type="checkbox"
+                                id="rememberMe"
+                                checked={rememberMe}
+                                onChange={(e) => setRememberMe(e.target.checked)}
+                                className="w-5 h-5 text-red-600 rounded border-gray-300 focus:ring-red-500"
+                            />
+                            <label htmlFor="rememberMe" className="text-gray-700 font-medium text-lg">
+                                記住帳號密碼，下次自動帶入
+                            </label>
+                        </div>
+                    )}
+
                     <button
                         type="submit"
                         disabled={loading}

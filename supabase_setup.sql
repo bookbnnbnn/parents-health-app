@@ -1,9 +1,13 @@
 -- Supabase 資料庫初始化設定
 
+-- 建立 uuid 擴充套件 (很重要，否則無法自動生成 id)
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 -- 建立 health_records 資料表
-CREATE TABLE health_records (
+CREATE TABLE IF NOT EXISTS health_records (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
     user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+    user_name TEXT, -- 方便後台查看是誰的資料
     type TEXT NOT NULL, -- 例如: 'blood_pressure', 'blood_sugar'
     value_1 NUMERIC, -- 收縮壓
     value_2 NUMERIC, -- 舒張壓

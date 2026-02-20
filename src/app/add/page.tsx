@@ -30,9 +30,12 @@ export default function AddRecord() {
         }
 
         try {
+            const userName = session.user.user_metadata?.name || session.user.email?.split('@')[0] || '';
+
             const recordData = type === 'blood_pressure'
                 ? {
                     user_id: session.user.id,
+                    user_name: userName,
                     type: 'blood_pressure',
                     value_1: parseInt(sys),
                     value_2: parseInt(dia),
@@ -42,6 +45,7 @@ export default function AddRecord() {
                 }
                 : {
                     user_id: session.user.id,
+                    user_name: userName,
                     type: 'blood_sugar',
                     value_1: parseInt(sugar),
                     unit: 'mg/dL',
