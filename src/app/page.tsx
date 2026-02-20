@@ -23,7 +23,8 @@ export default function Home() {
     if (!session) {
       router.push('/login')
     } else {
-      setUserName(session.user.email?.split('@')[0] || '長輩')
+      const metadataName = session.user.user_metadata?.name
+      setUserName(metadataName || session.user.email?.split('@')[0] || '長輩')
     }
   }
 
@@ -31,9 +32,8 @@ export default function Home() {
     const { data, error } = await supabase
       .from('health_records')
       .select('*')
-      .eq('type', 'blood_pressure') // 目前先顯示血壓
       .order('recorded_at', { ascending: true })
-      .limit(14) // 顯示最近 14 筆
+    // 不限制 limit 以取得圖表完整趨勢，但圖表顯示可以取最近 N 筆
 
     if (error) {
       console.error('Error fetching records:', error)
@@ -48,15 +48,27 @@ export default function Home() {
     router.push('/login')
   }
 
+  // 將記錄分類
+  const bpRecords = records.filter(r => r.type === 'blood_pressure').slice(-14)
+  const sugarRecords = records.filter(r => r.type === 'blood_sugar').slice(-14)
+
   // 格式化資料給圖表使用
-  const chartData = records.map(r => ({
+  const bpChartData = bpRecords.map(r => ({
     time: new Date(r.recorded_at).toLocaleDateString('zh-TW', { month: 'numeric', day: 'numeric' }),
     收縮壓: r.value_1,
     舒張壓: r.value_2,
     完整時間: new Date(r.recorded_at).toLocaleString('zh-TW')
   }))
 
+  const sugarChartData = sugarRecords.map(r => ({
+    time: new Date(r.recorded_at).toLocaleDateString('zh-TW', { month: 'numeric', day: 'numeric' }),
+    血糖值: r.value_1,
+    完整時間: new Date(r.recorded_at).toLocaleString('zh-TW')
+  }))
+
   const lastRecord = records[records.length - 1]
+  const lastBpRecord = bpRecords[bpRecords.length - 1]
+  const lastSugarRecord = sugarRecords[sugarRecords.length - 1]
 
   const getStatusColor = (sys?: number, dia?: number) => {
     if (!sys || !dia) return 'bg-gray-100 text-gray-800'
@@ -82,30 +94,42 @@ export default function Home() {
         </button>
       </div>
 
-      {lastRecord ? (
-        <div className={`p-6 rounded-2xl border-2 mb-8 shadow-sm ${getStatusColor(lastRecord.value_1, lastRecord.value_2)}`}>
-          <h2 className="text-lg font-medium mb-2">最新測量結果 ({new Date(lastRecord.recorded_at).toLocaleDateString('zh-TW')})</h2>
+      {lastBpRecord ? (
+        <div className={`p-6 rounded-2xl border-2 mb-4 shadow-sm ${getStatusColor(lastBpRecord.value_1, lastBpRecord.value_2)}`}>
+          <h2 className="text-lg font-medium mb-2">最新血壓 ({new Date(lastBpRecord.recorded_at).toLocaleDateString('zh-TW')})</h2>
           <div className="flex gap-4 items-baseline">
-            <div className="text-5xl font-black">{lastRecord.value_1}</div>
+            <div className="text-5xl font-black">{lastBpRecord.value_1}</div>
             <div className="text-3xl text-gray-600 font-bold">/</div>
-            <div className="text-5xl font-black">{lastRecord.value_2}</div>
+            <div className="text-5xl font-black">{lastBpRecord.value_2}</div>
             <span className="text-lg font-medium opacity-80 mt-2">mmHg</span>
           </div>
-          <p className="mt-4 text-xl font-bold">{getStatusText(lastRecord.value_1, lastRecord.value_2)}</p>
+          <p className="mt-4 text-xl font-bold">{getStatusText(lastBpRecord.value_1, lastBpRecord.value_2)}</p>
         </div>
-      ) : (
+      ) : null}
+
+      {lastSugarRecord ? (
+        <div className="p-6 rounded-2xl border-2 mb-8 shadow-sm bg-blue-50 text-blue-900 border-blue-200">
+          <h2 className="text-lg font-medium mb-2">最新血糖 ({new Date(lastSugarRecord.recorded_at).toLocaleDateString('zh-TW')})</h2>
+          <div className="flex gap-4 items-baseline">
+            <div className="text-5xl font-black">{lastSugarRecord.value_1}</div>
+            <span className="text-lg font-medium opacity-80 mt-2">mg/dL</span>
+          </div>
+        </div>
+      ) : null}
+
+      {!lastRecord && (
         <div className="p-8 text-center bg-gray-50 rounded-2xl mb-8 border border-gray-200">
           <p className="text-xl text-gray-600">目前還沒有記錄哦！</p>
           <p className="text-gray-500 mt-2">點擊下方按鈕新增第一筆資料</p>
         </div>
       )}
 
-      {records.length > 0 && (
-        <div>
-          <h2 className="text-2xl font-bold mb-4 text-gray-800">最近趨勢</h2>
+      {bpRecords.length > 0 && (
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold mb-4 text-gray-800">血壓趨勢</h2>
           <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 h-72">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <LineChart data={bpChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
                 <XAxis dataKey="time" tick={{ fontSize: 14 }} tickLine={false} axisLine={false} />
                 <YAxis domain={['dataMin - 10', 'dataMax + 10']} tick={{ fontSize: 14 }} tickLine={false} axisLine={false} />
@@ -129,6 +153,33 @@ export default function Home() {
                   stroke="#3B82F6"
                   strokeWidth={4}
                   dot={{ r: 4, strokeWidth: 2 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      )}
+
+      {sugarRecords.length > 0 && (
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold mb-4 text-gray-800">血糖趨勢</h2>
+          <div className="bg-white p-4 rounded-2xl shadow-sm border border-blue-100 h-72">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={sugarChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
+                <XAxis dataKey="time" tick={{ fontSize: 14 }} tickLine={false} axisLine={false} />
+                <YAxis domain={['dataMin - 10', 'dataMax + 10']} tick={{ fontSize: 14 }} tickLine={false} axisLine={false} />
+                <Tooltip
+                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                  labelStyle={{ fontWeight: 'bold', color: '#374151', marginBottom: '4px' }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="血糖值"
+                  stroke="#2563EB"
+                  strokeWidth={4}
+                  dot={{ r: 4, strokeWidth: 2 }}
+                  activeDot={{ r: 8 }}
                 />
               </LineChart>
             </ResponsiveContainer>

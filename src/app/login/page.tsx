@@ -8,6 +8,7 @@ import { Activity } from 'lucide-react'
 export default function Login() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [name, setName] = useState('')
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const [isSignUp, setIsSignUp] = useState(false)
@@ -23,6 +24,9 @@ export default function Login() {
                 const { error } = await supabase.auth.signUp({
                     email,
                     password,
+                    options: {
+                        data: { name }
+                    }
                 })
                 if (error) throw error
                 alert('註冊成功！請查看信箱完成驗證（如果沒有開啟信箱驗證，可以直接登入）。')
@@ -62,6 +66,19 @@ export default function Login() {
                 )}
 
                 <form onSubmit={handleAuth} className="space-y-6">
+                    {isSignUp && (
+                        <div>
+                            <label className="block text-gray-700 text-lg mb-2 font-medium">姓名</label>
+                            <input
+                                type="text"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-xl text-lg text-gray-900 font-medium focus:outline-none focus:ring-2 focus:ring-red-500 focus:bg-white transition-colors"
+                                placeholder="例如：李小明"
+                                required
+                            />
+                        </div>
+                    )}
                     <div>
                         <label className="block text-gray-700 text-lg mb-2 font-medium">電子郵件</label>
                         <input
