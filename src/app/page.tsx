@@ -73,6 +73,21 @@ export default function Home() {
   const lastBpRecord = bpRecords[bpRecords.length - 1]
   const lastSugarRecord = sugarRecords[sugarRecords.length - 1]
 
+  // 計算週平均
+  const sevenDaysAgo = new Date()
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
+
+  const weeklyBp = records.filter(r => r.type === 'blood_pressure' && new Date(r.recorded_at) >= sevenDaysAgo)
+  const weeklySugar = records.filter(r => r.type === 'blood_sugar' && new Date(r.recorded_at) >= sevenDaysAgo)
+
+  const avgBp = weeklyBp.length > 0 ? {
+    sys: Math.round(weeklyBp.reduce((acc, curr) => acc + (curr.value_1 || 0), 0) / weeklyBp.length),
+    dia: Math.round(weeklyBp.reduce((acc, curr) => acc + (curr.value_2 || 0), 0) / weeklyBp.length)
+  } : null
+
+  const avgSugar = weeklySugar.length > 0 ?
+    Math.round(weeklySugar.reduce((acc, curr) => acc + (curr.value_1 || 0), 0) / weeklySugar.length) : null
+
   const getStatusColor = (sys?: number, dia?: number) => {
     if (!sys || !dia) return 'bg-gray-100 text-gray-800'
     if (sys >= 140 || dia >= 90) return 'bg-red-100 text-red-800 border-red-200' // 高血壓
@@ -119,6 +134,36 @@ export default function Home() {
           </div>
         </div>
       ) : null}
+
+      {/* 統計數值區塊 */}
+      {(avgBp || avgSugar) && (
+        <div className="grid grid-cols-2 gap-4 mb-8">
+          <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm col-span-2">
+            <h3 className="text-gray-500 font-bold mb-3">最近 7 天平均</h3>
+            <div className="flex justify-between divide-x divide-gray-100">
+              {avgBp && (
+                <div className="flex-1 pr-4">
+                  <p className="text-sm text-gray-400 mb-1 leading-tight">平均血壓</p>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-3xl font-black text-gray-800">{avgBp.sys}</span>
+                    <span className="text-gray-300">/</span>
+                    <span className="text-2xl font-bold text-gray-600">{avgBp.dia}</span>
+                  </div>
+                </div>
+              )}
+              {avgSugar && (
+                <div className="flex-1 pl-4">
+                  <p className="text-sm text-gray-400 mb-1 leading-tight">平均血糖</p>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-3xl font-black text-blue-600">{avgSugar}</span>
+                    <span className="text-sm text-gray-400 ml-1">mg/dL</span>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {!lastRecord && (
         <div className="p-8 text-center bg-gray-50 rounded-2xl mb-8 border border-gray-200">
