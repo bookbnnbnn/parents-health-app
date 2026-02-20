@@ -31,16 +31,18 @@ export default function Trends() {
     const sugarRecords = records.filter(r => r.type === 'blood_sugar')
 
     const bpChartData = bpRecords.map(r => ({
+        id: r.id,
         time: new Date(r.recorded_at).toLocaleDateString('zh-TW', { month: 'numeric', day: 'numeric' }),
         收縮壓: r.value_1,
         舒張壓: r.value_2,
-        完整時間: new Date(r.recorded_at).toLocaleString('zh-TW')
+        完整時間: new Date(r.recorded_at).toLocaleString('zh-TW', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
     }))
 
     const sugarChartData = sugarRecords.map(r => ({
+        id: r.id,
         time: new Date(r.recorded_at).toLocaleDateString('zh-TW', { month: 'numeric', day: 'numeric' }),
         血糖值: r.value_1,
-        完整時間: new Date(r.recorded_at).toLocaleString('zh-TW')
+        完整時間: new Date(r.recorded_at).toLocaleString('zh-TW', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
     }))
 
     if (loading) return <div className="p-8 text-center text-xl">載入中...</div>
@@ -61,7 +63,14 @@ export default function Trends() {
                         <ResponsiveContainer width="100%" height="100%">
                             <LineChart data={bpChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
-                                <XAxis dataKey="time" tick={{ fontSize: 14 }} tickLine={false} axisLine={false} />
+                                <XAxis
+                                    dataKey="id"
+                                    tickFormatter={(val) => {
+                                        const item = bpChartData.find(d => d.id === val);
+                                        return item ? item.time : '';
+                                    }}
+                                    tick={{ fontSize: 14 }} tickLine={false} axisLine={false}
+                                />
                                 <YAxis domain={['dataMin - 10', 'dataMax + 10']} tick={{ fontSize: 14 }} tickLine={false} axisLine={false} />
                                 <Tooltip
                                     contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
@@ -75,7 +84,7 @@ export default function Trends() {
                                 <ReferenceLine y={90} stroke="#F59E0B" strokeDasharray="3 3" />
                                 <Line type="monotone" dataKey="收縮壓" stroke="#DC2626" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 8 }} />
                                 <Line type="monotone" dataKey="舒張壓" stroke="#3B82F6" strokeWidth={3} dot={{ r: 4 }} />
-                                <Brush dataKey="time" height={40} stroke="#9CA3AF" fill="#F3F4F6" tickFormatter={() => ''} />
+                                <Brush dataKey="id" height={40} stroke="#9CA3AF" fill="#F3F4F6" tickFormatter={() => ''} />
                             </LineChart>
                         </ResponsiveContainer>
                     </div>
@@ -89,7 +98,14 @@ export default function Trends() {
                         <ResponsiveContainer width="100%" height="100%">
                             <LineChart data={sugarChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
-                                <XAxis dataKey="time" tick={{ fontSize: 14 }} tickLine={false} axisLine={false} />
+                                <XAxis
+                                    dataKey="id"
+                                    tickFormatter={(val) => {
+                                        const item = sugarChartData.find(d => d.id === val);
+                                        return item ? item.time : '';
+                                    }}
+                                    tick={{ fontSize: 14 }} tickLine={false} axisLine={false}
+                                />
                                 <YAxis domain={['dataMin - 10', 'dataMax + 10']} tick={{ fontSize: 14 }} tickLine={false} axisLine={false} />
                                 <Tooltip
                                     contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
@@ -100,7 +116,7 @@ export default function Trends() {
                                     }}
                                 />
                                 <Line type="monotone" dataKey="血糖值" stroke="#2563EB" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 8 }} />
-                                <Brush dataKey="time" height={40} stroke="#9CA3AF" fill="#EFF6FF" tickFormatter={() => ''} />
+                                <Brush dataKey="id" height={40} stroke="#9CA3AF" fill="#EFF6FF" tickFormatter={() => ''} />
                             </LineChart>
                         </ResponsiveContainer>
                     </div>

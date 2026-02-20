@@ -55,16 +55,18 @@ export default function Home() {
 
   // 格式化資料給圖表使用
   const bpChartData = bpRecords.map(r => ({
+    id: r.id,
     time: new Date(r.recorded_at).toLocaleDateString('zh-TW', { month: 'numeric', day: 'numeric' }),
     收縮壓: r.value_1,
     舒張壓: r.value_2,
-    完整時間: new Date(r.recorded_at).toLocaleString('zh-TW')
+    完整時間: new Date(r.recorded_at).toLocaleString('zh-TW', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
   }))
 
   const sugarChartData = sugarRecords.map(r => ({
+    id: r.id,
     time: new Date(r.recorded_at).toLocaleDateString('zh-TW', { month: 'numeric', day: 'numeric' }),
     血糖值: r.value_1,
-    完整時間: new Date(r.recorded_at).toLocaleString('zh-TW')
+    完整時間: new Date(r.recorded_at).toLocaleString('zh-TW', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
   }))
 
   const lastRecord = records[records.length - 1]
@@ -132,7 +134,14 @@ export default function Home() {
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={bpChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
-                <XAxis dataKey="time" tick={{ fontSize: 14 }} tickLine={false} axisLine={false} />
+                <XAxis
+                  dataKey="id"
+                  tickFormatter={(val) => {
+                    const item = bpChartData.find(d => d.id === val);
+                    return item ? item.time : '';
+                  }}
+                  tick={{ fontSize: 14 }} tickLine={false} axisLine={false}
+                />
                 <YAxis domain={['dataMin - 10', 'dataMax + 10']} tick={{ fontSize: 14 }} tickLine={false} axisLine={false} />
                 <Tooltip
                   contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
@@ -177,7 +186,14 @@ export default function Home() {
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={sugarChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
-                <XAxis dataKey="time" tick={{ fontSize: 14 }} tickLine={false} axisLine={false} />
+                <XAxis
+                  dataKey="id"
+                  tickFormatter={(val) => {
+                    const item = sugarChartData.find(d => d.id === val);
+                    return item ? item.time : '';
+                  }}
+                  tick={{ fontSize: 14 }} tickLine={false} axisLine={false}
+                />
                 <YAxis domain={['dataMin - 10', 'dataMax + 10']} tick={{ fontSize: 14 }} tickLine={false} axisLine={false} />
                 <Tooltip
                   contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}

@@ -12,6 +12,10 @@ export default function AddRecord() {
     const [dia, setDia] = useState('')
     const [pulse, setPulse] = useState('')
     const [sugar, setSugar] = useState('')
+    const [recordedAt, setRecordedAt] = useState(() => {
+        const tzoffset = (new Date()).getTimezoneOffset() * 60000;
+        return new Date(Date.now() - tzoffset).toISOString().slice(0, 16);
+    })
     const [loading, setLoading] = useState(false)
     const [success, setSuccess] = useState(false)
 
@@ -34,12 +38,14 @@ export default function AddRecord() {
                     value_2: parseInt(dia),
                     value_3: pulse ? parseInt(pulse) : null,
                     unit: 'mmHg',
+                    recorded_at: new Date(recordedAt).toISOString(),
                 }
                 : {
                     user_id: session.user.id,
                     type: 'blood_sugar',
                     value_1: parseInt(sugar),
                     unit: 'mg/dL',
+                    recorded_at: new Date(recordedAt).toISOString(),
                 }
 
             const { error } = await supabase.from('health_records').insert([recordData])
@@ -97,6 +103,16 @@ export default function AddRecord() {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
+                <div>
+                    <label className="block text-gray-700 text-xl mb-2 font-bold">測量時間</label>
+                    <input
+                        type="datetime-local"
+                        value={recordedAt}
+                        onChange={(e) => setRecordedAt(e.target.value)}
+                        className="w-full px-6 py-4 bg-white border-2 border-gray-200 rounded-2xl text-xl text-gray-900 font-bold focus:outline-none focus:border-gray-500"
+                        required
+                    />
+                </div>
                 {type === 'blood_pressure' ? (
                     <>
                         <div>
